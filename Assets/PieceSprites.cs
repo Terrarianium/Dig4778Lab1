@@ -20,6 +20,9 @@ public class PieceSprites : MonoBehaviour
     public ChessPiecesEnum piece;
     SpriteRenderer sprite;
 
+    [ColorUsage(true, true)]
+    public Color spriteColor;
+
     private void OnDrawGizmos()
     {
         if (sprite == null)
@@ -48,5 +51,11 @@ public class PieceSprites : MonoBehaviour
                 sprite.sprite = knight;
                 break;
         }
+        UpdateSpriteColor();
+    }
+
+    void UpdateSpriteColor()
+    {
+        sprite.color = spriteColor;
     }
 }
