@@ -15,8 +15,8 @@ public enum ChessPiecesEnum
 
 public class PieceSprites : MonoBehaviour
 {
-    [HideInInspector]
-    public Sprite king, queen, bishop, pawn, knight, rook;
+    
+    private Sprite king, queen, bishop, pawn, knight, rook;
     public ChessPiecesEnum piece;
     SpriteRenderer sprite;
 
@@ -25,11 +25,12 @@ public class PieceSprites : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (sprite == null)
+        if (gameObject.GetComponent<SpriteRenderer>() == null)
         {
-            sprite = gameObject.AddComponent<SpriteRenderer>();
+            gameObject.AddComponent<SpriteRenderer>();
         }
-        sprite = gameObject.GetComponent<SpriteRenderer>();   
+        sprite = gameObject.GetComponent<SpriteRenderer>(); 
+        
         switch (piece)
         {
             case ChessPiecesEnum.Bishop:
@@ -40,15 +41,18 @@ public class PieceSprites : MonoBehaviour
                 break;
             case ChessPiecesEnum.King:
                 sprite.sprite = king;
+                KingMoves();
                 break;
             case ChessPiecesEnum.Pawn:
                 sprite.sprite = pawn;
+                PawnMoves();
                 break;
             case ChessPiecesEnum.Rook:
                 sprite.sprite = rook;
                 break;
             case ChessPiecesEnum.Knight:
                 sprite.sprite = knight;
+                KnightMoves();
                 break;
         }
         UpdateSpriteColor();
@@ -57,5 +61,87 @@ public class PieceSprites : MonoBehaviour
     void UpdateSpriteColor()
     {
         sprite.color = spriteColor;
+    }
+
+    private void PawnMoves()
+    {
+        // Regular movement and also initial movement where it is possible to move 2 spaces forward
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(new Vector3(this.transform.position.x - 0.15f, this.transform.position.y, this.transform.position.z), new Vector3(this.transform.position.x - 0.15f, this.transform.position.y + 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 0.15f, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+        Gizmos.DrawLine(new Vector3(this.transform.position.x + 0.15f, this.transform.position.y, this.transform.position.z), new Vector3(this.transform.position.x + 0.15f, this.transform.position.y + 2, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 0.15f, this.transform.position.y + 2, this.transform.position.z), 0.15f);
+
+        // Pawn can take diagonally
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x + 1, this.transform.position.y + 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 1, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x - 1, this.transform.position.y + 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 1, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+    }
+
+    private void KnightMoves()
+    {
+        Gizmos.color = Color.green;
+        // Up
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x, this.transform.position.y + 2, this.transform.position.z));
+        Gizmos.DrawLine(new Vector3(this.transform.position.x - 1, this.transform.position.y + 2, this.transform.position.z), new Vector3(this.transform.position.x + 1, this.transform.position.y + 2, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 1, this.transform.position.y + 2, this.transform.position.z), 0.15f);
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 1, this.transform.position.y + 2, this.transform.position.z), 0.15f);
+
+        // Right
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x + 2, this.transform.position.y, this.transform.position.z));
+        Gizmos.DrawLine(new Vector3(this.transform.position.x + 2, this.transform.position.y + 1, this.transform.position.z), new Vector3(this.transform.position.x + 2, this.transform.position.y - 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 2, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 2, this.transform.position.y - 1, this.transform.position.z), 0.15f);
+
+        // Left
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x - 2, this.transform.position.y, this.transform.position.z));
+        Gizmos.DrawLine(new Vector3(this.transform.position.x - 2, this.transform.position.y + 1, this.transform.position.z), new Vector3(this.transform.position.x - 2, this.transform.position.y - 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 2, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 2, this.transform.position.y - 1, this.transform.position.z), 0.15f);
+
+        // Down
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x, this.transform.position.y - 2, this.transform.position.z));
+        Gizmos.DrawLine(new Vector3(this.transform.position.x - 1, this.transform.position.y - 2, this.transform.position.z), new Vector3(this.transform.position.x + 1, this.transform.position.y - 2, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 1, this.transform.position.y - 2, this.transform.position.z), 0.15f);
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 1, this.transform.position.y - 2, this.transform.position.z), 0.15f);
+    }
+
+    private void KingMoves()
+    {
+        Gizmos.color = Color.green;
+
+        // Up
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+
+        // Down
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x, this.transform.position.y - 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x, this.transform.position.y - 1, this.transform.position.z), 0.15f);
+
+        // Right
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x + 1, this.transform.position.y, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 1, this.transform.position.y, this.transform.position.z), 0.15f);
+
+        // Left
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x - 1, this.transform.position.y, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 1, this.transform.position.y, this.transform.position.z), 0.15f);
+
+        // Up Right
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x + 1, this.transform.position.y + 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 1, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+
+        // Up Left
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x - 1, this.transform.position.y + 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 1, this.transform.position.y + 1, this.transform.position.z), 0.15f);
+
+        // Down Right
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x + 1, this.transform.position.y - 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x + 1, this.transform.position.y - 1, this.transform.position.z), 0.15f);
+
+        // Down Left
+        Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x - 1, this.transform.position.y - 1, this.transform.position.z));
+        Gizmos.DrawSphere(new Vector3(this.transform.position.x - 1, this.transform.position.y - 1, this.transform.position.z), 0.15f);
     }
 }
