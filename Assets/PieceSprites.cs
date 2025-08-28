@@ -19,6 +19,7 @@ public class PieceSprites : MonoBehaviour
 {
     
     private Sprite[] sprites = new Sprite[6];
+
     public ChessPiecesEnum piece;
     SpriteRenderer sprite;
 
