@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public enum ChessPiecesEnum
@@ -13,45 +14,56 @@ public enum ChessPiecesEnum
     Knight
 }
 
+[ExecuteInEditMode]
 public class PieceSprites : MonoBehaviour
 {
     
-    private Sprite king, queen, bishop, pawn, knight, rook;
+    private Sprite[] sprites = new Sprite[6];
+
     public ChessPiecesEnum piece;
     SpriteRenderer sprite;
 
     [ColorUsage(true, true)]
     public Color spriteColor;
 
-    private void OnDrawGizmos()
+    private void Update()
     {
-        if (gameObject.GetComponent<SpriteRenderer>() == null)
-        {
-            gameObject.AddComponent<SpriteRenderer>();
-        }
-        sprite = gameObject.GetComponent<SpriteRenderer>(); 
-        
+        sprite = GetComponent<SpriteRenderer>();
+        sprites[0] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/BishopSprite.png");
+        sprites[1] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/QueenSprite.png");
+        sprites[2] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/KingSprite.png");
+        sprites[3] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/PawnSprite.png");
+        sprites[4] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/RookSprite.png");
+        sprites[5] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/KnightSprite.png");
+    }
+
+    void OnDrawGizmosSelected()
+    {   
         switch (piece)
         {
             case ChessPiecesEnum.Bishop:
-                sprite.sprite = bishop;
+                sprite.sprite = sprites[0];
+                BishopMoves();
                 break;
             case ChessPiecesEnum.Queen: 
-                sprite.sprite = queen;
+                sprite.sprite = sprites[1];
+                RookMoves();
+                BishopMoves();
                 break;
             case ChessPiecesEnum.King:
-                sprite.sprite = king;
+                sprite.sprite = sprites[2];
                 KingMoves();
                 break;
             case ChessPiecesEnum.Pawn:
-                sprite.sprite = pawn;
+                sprite.sprite = sprites[3];
                 PawnMoves();
                 break;
             case ChessPiecesEnum.Rook:
-                sprite.sprite = rook;
+                sprite.sprite = sprites[4];
+                RookMoves();
                 break;
             case ChessPiecesEnum.Knight:
-                sprite.sprite = knight;
+                sprite.sprite = sprites[5];
                 KnightMoves();
                 break;
         }
@@ -143,5 +155,39 @@ public class PieceSprites : MonoBehaviour
         // Down Left
         Gizmos.DrawLine(this.transform.position, new Vector3(this.transform.position.x - 1, this.transform.position.y - 1, this.transform.position.z));
         Gizmos.DrawSphere(new Vector3(this.transform.position.x - 1, this.transform.position.y - 1, this.transform.position.z), 0.15f);
+    }
+
+    private void RookMoves()
+    {
+        Gizmos.color = Color.green;
+
+        // Up
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 7, 0));
+
+        // Down
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, -7, 0));
+
+        // Left
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(-7, 0, 0));
+
+        // Right
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(7, 0, 0));
+    }
+
+    private void BishopMoves()
+    {
+        Gizmos.color = Color.green;
+
+        // Up Left
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(-7, 7, 0));
+
+        // Up Right
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(7, 7, 0));
+
+        // Down Left
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(-7, -7, 0));
+
+        // Down Right
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(7, -7, 0));
     }
 }
